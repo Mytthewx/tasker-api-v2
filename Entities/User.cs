@@ -5,7 +5,7 @@ namespace TaskerAPI
 {
 	public class User
 	{
-		public int Id { get; set; }
+		public int Id { get;}
 		public string Login { get; set; }
 		public string Password { get; set; }
 		[EmailAddress]
