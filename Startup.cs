@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,6 +26,7 @@ namespace TaskerAPI
 
             services.AddControllers()
                 .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddDbContext<TaskerContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("TaskerDb")));
             services.AddSwaggerGen(c =>
@@ -33,6 +35,8 @@ namespace TaskerAPI
             });
 
             services.AddScoped<INoteService, NoteService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IReminderService, ReminderService>();
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
