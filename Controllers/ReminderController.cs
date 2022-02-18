@@ -3,55 +3,54 @@ using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
 using TaskerAPI.Services;
 
-namespace TaskerAPI.Controllers
+namespace TaskerAPI.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class ReminderController : ControllerBase
 {
-	[ApiController]
-	[Route("[controller]")]
-	public class ReminderController : ControllerBase
+	private readonly IReminderService _reminderService;
+
+	public ReminderController(IReminderService reminderService)
 	{
-		private readonly IReminderService _reminderService;
+		_reminderService = reminderService;
+	}
 
-		public ReminderController(IReminderService reminderService)
+	[HttpGet]
+	public IActionResult GetAll()
+	{
+		return Ok(_reminderService.GetAll());
+	}
+
+	[HttpGet]
+	[Route("id")]
+	public IActionResult Get(int id)
+	{
+		return Ok(_reminderService.Get(id));
+	}
+
+	[HttpPost]
+	public IActionResult Create(ReminderCreate reminderCreate)
+	{
+		return Ok(_reminderService.Create(reminderCreate));
+	}
+
+	[HttpDelete]
+	[Route("id")]
+	public IActionResult Delete(int id)
+	{
+		if (_reminderService.Delete(id) == false)
 		{
-			_reminderService = reminderService;
+			return NotFound();
 		}
 
-		[HttpGet]
-		public IActionResult GetAll()
-		{
-			return Ok(_reminderService.GetAll());
-		}
+		return Ok();
+	}
 
-		[HttpGet]
-		[Route("id")]
-		public IActionResult Get(int id)
-		{
-			return Ok(_reminderService.Get(id));
-		}
-
-		[HttpPost]
-		public IActionResult Create(ReminderCreate reminderCreate)
-		{
-			return Ok(_reminderService.Create(reminderCreate));
-		}
-
-		[HttpDelete]
-		[Route("id")]
-		public IActionResult Delete(int id)
-		{
-			if (_reminderService.Delete(id) == false)
-			{
-				return NotFound();
-			}
-
-			return Ok();
-		}
-
-		[HttpPut]
-		[Route("id")]
-		public Reminder Update(int id, ReminderUpdate reminderUpdate)
-		{
-			return _reminderService.Update(id, reminderUpdate);
-		}
+	[HttpPut]
+	[Route("id")]
+	public IActionResult Update(int id, ReminderUpdate reminderUpdate)
+	{
+		return Ok(_reminderService.Update(id, reminderUpdate));
 	}
 }

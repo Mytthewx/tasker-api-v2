@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
@@ -12,8 +11,8 @@ namespace TaskerAPI.Services;
 public class NoteService : INoteService
 {
 	private const string NOTE_NOT_FOUND_MESSAGE = "Note with this id doesn't exist.";
-	private readonly TaskerContext db;
 	private readonly IMapper _mapper;
+	private readonly TaskerContext db;
 
 	public NoteService(TaskerContext taskerContext, IMapper mapper)
 	{
@@ -29,7 +28,7 @@ public class NoteService : INoteService
 	public Note Get(int id)
 	{
 		return db.Notes.Include(x => x.Reminders)
-			       .FirstOrDefault(x => x.Id == id) 
+			       .FirstOrDefault(x => x.Id == id)
 		       ?? throw new Exception(NOTE_NOT_FOUND_MESSAGE);
 	}
 
@@ -44,11 +43,8 @@ public class NoteService : INoteService
 	public bool Delete(int id)
 	{
 		var note = db.Notes.FirstOrDefault(x => x.Id == id);
-		if (note == null)
-		{
-			return false;
-		}
-		
+		if (note == null) return false;
+
 		db.Notes.Remove(note);
 		db.SaveChanges();
 		return true;
@@ -57,15 +53,12 @@ public class NoteService : INoteService
 	public Note Update(int id, NoteUpdate newNote)
 	{
 		var note = db.Notes.FirstOrDefault(x => x.Id == id);
-		if (note == null)
-		{
-			throw new Exception(NOTE_NOT_FOUND_MESSAGE);
-		}
+		if (note == null) throw new Exception(NOTE_NOT_FOUND_MESSAGE);
 
 		note.Title = newNote.Title;
 		note.Content = newNote.Content;
 		note.CreationDate = newNote.CreationDate;
-		
+
 		db.SaveChanges();
 		return note;
 	}

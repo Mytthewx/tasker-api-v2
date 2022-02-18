@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using AutoMapper;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
@@ -11,15 +10,15 @@ namespace TaskerAPI.Services;
 public class UserService : IUserService
 {
 	private const string USER_NOT_FOUND_MESSAGE = "User with this id doesn't exist.";
-	private readonly TaskerContext db;
 	private readonly IMapper _mapper;
+	private readonly TaskerContext db;
 
 	public UserService(TaskerContext taskerContext, IMapper mapper)
 	{
 		db = taskerContext;
 		_mapper = mapper;
 	}
-	
+
 	public IEnumerable<User> GetAll()
 	{
 		return db.Users.ToList();
@@ -41,11 +40,8 @@ public class UserService : IUserService
 	public bool Delete(int id)
 	{
 		var user = db.Users.FirstOrDefault(x => x.Id == id);
-		if (user == null)
-		{
-			return false;
-		}
-		
+		if (user == null) return false;
+
 		db.Users.Remove(user);
 		db.SaveChanges();
 		return true;
@@ -54,10 +50,7 @@ public class UserService : IUserService
 	public User Update(int id, UserUpdate newUser)
 	{
 		var user = db.Users.FirstOrDefault(x => x.Id == id);
-		if (user == null)
-		{
-			throw new Exception(USER_NOT_FOUND_MESSAGE);
-		}
+		if (user == null) throw new Exception(USER_NOT_FOUND_MESSAGE);
 
 		var editedUser = EditReflectionHelper(user, newUser);
 
@@ -75,11 +68,9 @@ public class UserService : IUserService
 		{
 			if (newUserProperty.GetValue(newUser) == null) continue;
 			var userProperty = userProperties.FirstOrDefault(x => x.Name == newUserProperty.Name);
-			if (userProperty != null)
-			{
-				userProperty.SetValue(user, newUserProperty.GetValue(newUser));
-			}
+			if (userProperty != null) userProperty.SetValue(user, newUserProperty.GetValue(newUser));
 		}
+
 		return newUser;
 	}
 }

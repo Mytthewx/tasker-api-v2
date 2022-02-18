@@ -1,12 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using TaskerAPI.Models.Create;
+﻿using TaskerAPI.Models.Create;
 
-namespace TaskerAPI
+namespace TaskerAPI;
+
+public class Reminder : ReminderCreate
 {
-	public class Reminder : ReminderCreate
-	{
-		public int Id { get; set; }
-		public Note Note { get; set; }
-	}
+	public int Id { get; set; }
+	public Note Note { get; set; }
 }

@@ -7,7 +7,7 @@ public class TaskerContext : DbContext
 	public TaskerContext(DbContextOptions options) : base(options)
 	{
 	}
-	
+
 	public DbSet<Note> Notes { get; set; }
 	public DbSet<Reminder> Reminders { get; set; }
 	public DbSet<User> Users { get; set; }
