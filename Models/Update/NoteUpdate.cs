@@ -1,10 +1,11 @@
 ﻿using System;
 
-namespace TaskerAPI.Models;
-
-public class NoteUpdate
+namespace TaskerAPI.Models
 {
-	public string Title { get; set; }
-	public string Content { get; set; }
-	public DateTime CreationDate { get; set; }
+    public class NoteUpdate
+    {
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public DateTime CreationDate { get; set; }
+    }
 }

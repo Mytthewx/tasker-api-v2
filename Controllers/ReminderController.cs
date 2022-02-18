@@ -3,54 +3,55 @@ using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
 using TaskerAPI.Services;
 
-namespace TaskerAPI.Controllers;
-
-[ApiController]
-[Route("[controller]")]
-public class ReminderController : ControllerBase
+namespace TaskerAPI.Controllers
 {
-	private readonly IReminderService _reminderService;
+    [ApiController]
+    [Route("[controller]")]
+    public class ReminderController : ControllerBase
+    {
+        private readonly IReminderService _reminderService;
 
-	public ReminderController(IReminderService reminderService)
-	{
-		_reminderService = reminderService;
-	}
+        public ReminderController(IReminderService reminderService)
+        {
+            _reminderService = reminderService;
+        }
 
-	[HttpGet]
-	public IActionResult GetAll()
-	{
-		return Ok(_reminderService.GetAll());
-	}
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            return Ok(_reminderService.GetAll());
+        }
 
-	[HttpGet]
-	[Route("id")]
-	public IActionResult Get(int id)
-	{
-		return Ok(_reminderService.Get(id));
-	}
+        [HttpGet]
+        [Route("id")]
+        public IActionResult Get(int id)
+        {
+            return Ok(_reminderService.Get(id));
+        }
 
-	[HttpPost]
-	public IActionResult Create(ReminderCreate reminderCreate)
-	{
-		return Ok(_reminderService.Create(reminderCreate));
-	}
+        [HttpPost]
+        public IActionResult Create(ReminderCreate reminderCreate)
+        {
+            return Ok(_reminderService.Create(reminderCreate));
+        }
 
-	[HttpDelete]
-	[Route("id")]
-	public IActionResult Delete(int id)
-	{
-		if (_reminderService.Delete(id) == false)
-		{
-			return NotFound();
-		}
+        [HttpDelete]
+        [Route("id")]
+        public IActionResult Delete(int id)
+        {
+            if (!_reminderService.Delete(id))
+            {
+                return NotFound();
+            }
 
-		return Ok();
-	}
+            return Ok();
+        }
 
-	[HttpPut]
-	[Route("id")]
-	public IActionResult Update(int id, ReminderUpdate reminderUpdate)
-	{
-		return Ok(_reminderService.Update(id, reminderUpdate));
-	}
+        [HttpPut]
+        [Route("id")]
+        public IActionResult Update(int id, ReminderUpdate reminderUpdate)
+        {
+            return Ok(_reminderService.Update(id, reminderUpdate));
+        }
+    }
 }
