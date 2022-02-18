@@ -1,52 +1,57 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
 using TaskerAPI.Services;
 
-namespace TaskerAPI.Controllers;
-
-[ApiController]
-[Route("[controller]")]
-public class ReminderController : ControllerBase
+namespace TaskerAPI.Controllers
 {
-	private readonly IReminderService _reminderService;
-
-	public ReminderController(IReminderService reminderService)
+	[ApiController]
+	[Route("[controller]")]
+	public class ReminderController : ControllerBase
 	{
-		_reminderService = reminderService;
-	}
+		private readonly IReminderService _reminderService;
 
-	[HttpGet]
-	public IEnumerable<Reminder> GetAll()
-	{
-		return _reminderService.GetAll();
-	}
+		public ReminderController(IReminderService reminderService)
+		{
+			_reminderService = reminderService;
+		}
 
-	[HttpGet]
-	[Route("id")]
-	public Reminder Get(int id)
-	{
-		return _reminderService.Get(id);
-	}
+		[HttpGet]
+		public IActionResult GetAll()
+		{
+			return Ok(_reminderService.GetAll());
+		}
 
-	[HttpPost]
-	public Reminder Create(ReminderCreate reminderCreate)
-	{
-		return _reminderService.Create(reminderCreate);
-	}
+		[HttpGet]
+		[Route("id")]
+		public IActionResult Get(int id)
+		{
+			return Ok(_reminderService.Get(id));
+		}
 
-	[HttpDelete]
-	[Route("id")]
-	public void Delete(int id)
-	{
-		_reminderService.Delete(id);
-	}
+		[HttpPost]
+		public IActionResult Create(ReminderCreate reminderCreate)
+		{
+			return Ok(_reminderService.Create(reminderCreate));
+		}
 
-	[HttpPost]
-	[Route("id")]
-	public Reminder Update(int id, ReminderUpdate reminderUpdate)
-	{
-		return _reminderService.Update(id, reminderUpdate);
+		[HttpDelete]
+		[Route("id")]
+		public IActionResult Delete(int id)
+		{
+			if (_reminderService.Delete(id) == false)
+			{
+				return NotFound();
+			}
+
+			return Ok();
+		}
+
+		[HttpPut]
+		[Route("id")]
+		public Reminder Update(int id, ReminderUpdate reminderUpdate)
+		{
+			return _reminderService.Update(id, reminderUpdate);
+		}
 	}
 }

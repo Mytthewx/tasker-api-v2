@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
@@ -45,7 +46,7 @@ public class NoteService : INoteService
 		var note = db.Notes.FirstOrDefault(x => x.Id == id);
 		if (note == null)
 		{
-			throw new Exception(NOTE_NOT_FOUND_MESSAGE);
+			return false;
 		}
 		
 		db.Notes.Remove(note);

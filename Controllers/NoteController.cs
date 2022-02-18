@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
 using TaskerAPI.Services;
@@ -20,36 +17,41 @@ namespace TaskerAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Note> GetAll()
+        public IActionResult GetAll()
         {
-            return _noteService.GetAll();
+            return Ok(_noteService.GetAll());
         }
 
         [HttpGet]
         [Route("id")]
-        public Note Get(int id)
+        public IActionResult Get(int id)
         {
-            return _noteService.Get(id);
+            return Ok(_noteService.Get(id));
         }
 
         [HttpPost]
-        public Note Create(NoteCreate noteCreate)
+        public IActionResult Create(NoteCreate noteCreate)
         {
-            return _noteService.Create(noteCreate);
+            return Ok(_noteService.Create(noteCreate));
         }
 
         [HttpDelete]
         [Route("id")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _noteService.Delete(id);
+            if (_noteService.Delete(id) == false)
+            {
+                return NotFound();
+            }
+
+            return Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("id")]
-        public Note Update(int id, NoteUpdate noteUpdate)
+        public IActionResult Update(int id, NoteUpdate noteUpdate)
         {
-            return _noteService.Update(id, noteUpdate);
+            return Ok(_noteService.Update(id, noteUpdate));
         }
     }
 }

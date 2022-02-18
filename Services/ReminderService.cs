@@ -42,7 +42,7 @@ public class ReminderService : IReminderService
 		var reminder = db.Reminders.FirstOrDefault(x => x.Id == id);
 		if (reminder == null)
 		{
-			throw new Exception(REMINDER_NOT_FOUND_MESSAGE);
+			return false;
 		}
 
 		db.Reminders.Remove(reminder);

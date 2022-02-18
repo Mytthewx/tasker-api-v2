@@ -4,49 +4,55 @@ using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
 using TaskerAPI.Services;
 
-namespace TaskerAPI.Controllers;
-
-[ApiController]
-[Route("[controller]")]
-public class UserController : ControllerBase
+namespace TaskerAPI.Controllers
 {
-	private readonly IUserService _userService;
+	[ApiController]
+	[Route("[controller]")]
+	public class UserController : ControllerBase
+	{
+		private readonly IUserService _userService;
 
-	public UserController(IUserService userService)
-	{
-		_userService = userService;
-	}
-	
-	[HttpGet]
-	public IEnumerable<User> GetAll()
-	{
-		return _userService.GetAll();
-	}
+		public UserController(IUserService userService)
+		{
+			_userService = userService;
+		}
 
-	[HttpGet]
-	[Route("id")]
-	public User Get(int id)
-	{
-		return _userService.Get(id);
-	}
+		[HttpGet]
+		public IActionResult GetAll()
+		{
+			return Ok(_userService.GetAll());
+		}
 
-	[HttpPost]
-	public User Create(UserCreate userCreate)
-	{
-		return _userService.Create(userCreate);
-	}
+		[HttpGet]
+		[Route("id")]
+		public IActionResult Get(int id)
+		{
+			return Ok(_userService.Get(id));
+		}
 
-	[HttpDelete]
-	[Route("id")]
-	public void Delete(int id)
-	{
-		_userService.Delete(id);
-	}
+		[HttpPost]
+		public IActionResult Create(UserCreate userCreate)
+		{
+			return Ok(_userService.Create(userCreate));
+		}
 
-	[HttpPost]
-	[Route("id")]
-	public User Update(int id, UserUpdate userUpdate)
-	{
-		return _userService.Update(id, userUpdate);
+		[HttpDelete]
+		[Route("id")]
+		public IActionResult Delete(int id)
+		{
+			if (!_userService.Delete(id))
+			{
+				return NotFound();
+			}
+
+			return Ok();
+		}
+
+		[HttpPut]
+		[Route("id")]
+		public IActionResult Update(int id, UserUpdate userUpdate)
+		{
+			return Ok(_userService.Update(id, userUpdate));
+		}
 	}
 }

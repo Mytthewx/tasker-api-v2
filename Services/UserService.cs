@@ -43,7 +43,7 @@ public class UserService : IUserService
 		var user = db.Users.FirstOrDefault(x => x.Id == id);
 		if (user == null)
 		{
-			throw new Exception(USER_NOT_FOUND_MESSAGE);
+			return false;
 		}
 		
 		db.Users.Remove(user);
