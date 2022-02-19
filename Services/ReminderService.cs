@@ -1,68 +1,69 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
+using TaskerAPI.Entities;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
+using TaskerAPI.Services.Interfaces;
 
-namespace TaskerAPI.Services
+namespace TaskerAPI.Services;
+
+public class ReminderService : IReminderService
 {
-    public class ReminderService : IReminderService
+    private const string ReminderNotFoundMessage = "Reminder with this id doesn't exist.";
+    private readonly IMapper _mapper;
+    private readonly TaskerContext db;
+
+    public ReminderService(TaskerContext taskerContext, IMapper mapper)
     {
-        private const string REMINDER_NOT_FOUND_MESSAGE = "Reminder with this id doesn't exist.";
-        private readonly IMapper _mapper;
-        private readonly TaskerContext db;
+        db = taskerContext;
+        _mapper = mapper;
+    }
 
-        public ReminderService(TaskerContext taskerContext, IMapper mapper)
+    public IEnumerable<Reminder> GetAll()
+    {
+        return db.Reminders.ToList();
+    }
+
+    public Reminder Get(int id)
+    {
+        return db.Reminders.FirstOrDefault(x => x.Id == id) ?? throw new Exception(ReminderNotFoundMessage);
+    }
+
+    public Reminder Create(ReminderCreate reminder)
+    {
+        var createReminder = _mapper.Map<Reminder>(reminder);
+        db.Reminders.Add(createReminder);
+        db.SaveChanges();
+        return createReminder;
+    }
+
+    public bool Delete(int id)
+    {
+        var reminder = db.Reminders.FirstOrDefault(x => x.Id == id);
+        if (reminder == null)
         {
-            db = taskerContext;
-            _mapper = mapper;
+            return false;
         }
 
-        public IEnumerable<Reminder> GetAll()
+        db.Reminders.Remove(reminder);
+        db.SaveChanges();
+        return true;
+    }
+
+    public Reminder Update(int id, ReminderUpdate newReminder)
+    {
+        var reminder = db.Reminders.FirstOrDefault(x => x.Id == id);
+        if (reminder == null)
         {
-            return db.Reminders.ToList();
+            throw new Exception(ReminderNotFoundMessage);
         }
 
-        public Reminder Get(int id)
-        {
-            return db.Reminders.FirstOrDefault(x => x.Id == id) ?? throw new Exception(REMINDER_NOT_FOUND_MESSAGE);
-        }
+        reminder.Label = newReminder.Label;
+        reminder.Date = newReminder.Date;
 
-        public Reminder Create(ReminderCreate reminder)
-        {
-            var createReminder = _mapper.Map<Reminder>(reminder);
-            db.Reminders.Add(createReminder);
-            db.SaveChanges();
-            return createReminder;
-        }
-
-        public bool Delete(int id)
-        {
-            var reminder = db.Reminders.FirstOrDefault(x => x.Id == id);
-            if (reminder == null)
-            {
-                return false;
-            }
-
-            db.Reminders.Remove(reminder);
-            db.SaveChanges();
-            return true;
-        }
-
-        public Reminder Update(int id, ReminderUpdate newReminder)
-        {
-            var reminder = db.Reminders.FirstOrDefault(x => x.Id == id);
-            if (reminder == null)
-            {
-                throw new Exception(REMINDER_NOT_FOUND_MESSAGE);
-            }
-
-            reminder.Label = newReminder.Label;
-            reminder.Date = newReminder.Date;
-
-            db.SaveChanges();
-            return reminder;
-        }
+        db.SaveChanges();
+        return reminder;
     }
 }

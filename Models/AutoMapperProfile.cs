@@ -1,20 +1,20 @@
 ﻿using AutoMapper;
+using TaskerAPI.Entities;
 using TaskerAPI.Models.Create;
 
-namespace TaskerAPI.Models
+namespace TaskerAPI.Models;
+
+public class AutoMapperProfile : Profile
 {
-    public class AutoMapperProfile : Profile
+    public AutoMapperProfile()
     {
-        public AutoMapperProfile()
-        {
-            CreateMap<Note, NoteCreate>().ReverseMap();
-            CreateMap<Note, NoteUpdate>().ReverseMap();
+        CreateMap<Note, NoteCreate>().ReverseMap();
+        CreateMap<Note, NoteUpdate>().ReverseMap();
 
-            CreateMap<User, UserCreate>().ReverseMap();
-            CreateMap<User, UserUpdate>().ReverseMap();
+        CreateMap<User, UserCreate>().ReverseMap();
+        CreateMap<User, UserUpdate>().ReverseMap();
 
-            CreateMap<Reminder, ReminderUpdate>().ReverseMap();
-            CreateMap<Reminder, ReminderCreate>().ReverseMap();
-        }
+        CreateMap<Reminder, ReminderUpdate>().ReverseMap();
+        CreateMap<Reminder, ReminderCreate>().ReverseMap();
     }
 }
