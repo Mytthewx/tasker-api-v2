@@ -56,7 +56,10 @@ namespace TaskerAPI.Services
         public Note Update(int id, NoteUpdate newNote)
         {
             var note = db.Notes.FirstOrDefault(x => x.Id == id);
-            if (note == null) throw new Exception(NOTE_NOT_FOUND_MESSAGE);
+            if (note == null)
+            {
+                throw new Exception(NOTE_NOT_FOUND_MESSAGE);
+            }
 
             note.Title = newNote.Title;
             note.Content = newNote.Content;

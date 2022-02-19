@@ -40,7 +40,10 @@ namespace TaskerAPI.Services
         public bool Delete(int id)
         {
             var reminder = db.Reminders.FirstOrDefault(x => x.Id == id);
-            if (reminder == null) return false;
+            if (reminder == null)
+            {
+                return false;
+            }
 
             db.Reminders.Remove(reminder);
             db.SaveChanges();
@@ -50,7 +53,10 @@ namespace TaskerAPI.Services
         public Reminder Update(int id, ReminderUpdate newReminder)
         {
             var reminder = db.Reminders.FirstOrDefault(x => x.Id == id);
-            if (reminder == null) throw new Exception(REMINDER_NOT_FOUND_MESSAGE);
+            if (reminder == null)
+            {
+                throw new Exception(REMINDER_NOT_FOUND_MESSAGE);
+            }
 
             reminder.Label = newReminder.Label;
             reminder.Date = newReminder.Date;

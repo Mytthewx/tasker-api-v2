@@ -40,7 +40,10 @@ namespace TaskerAPI.Services
         public bool Delete(int id)
         {
             var user = db.Users.FirstOrDefault(x => x.Id == id);
-            if (user == null) return false;
+            if (user == null) 
+            {
+                return false;
+            }
 
             db.Users.Remove(user);
             db.SaveChanges();
@@ -50,7 +53,10 @@ namespace TaskerAPI.Services
         public User Update(int id, UserUpdate newUser)
         {
             var user = db.Users.FirstOrDefault(x => x.Id == id);
-            if (user == null) throw new Exception(USER_NOT_FOUND_MESSAGE);
+            if (user == null) 
+            {
+                throw new Exception(USER_NOT_FOUND_MESSAGE);
+            }
 
             var editedUser = EditReflectionHelper(user, newUser);
 
@@ -66,9 +72,15 @@ namespace TaskerAPI.Services
 
             foreach (var newUserProperty in newUserProperties)
             {
-                if (newUserProperty.GetValue(newUser) == null) continue;
+                if (newUserProperty.GetValue(newUser) == null) 
+                {
+                    continue;
+                }
                 var userProperty = userProperties.FirstOrDefault(x => x.Name == newUserProperty.Name);
-                if (userProperty != null) userProperty.SetValue(user, newUserProperty.GetValue(newUser));
+                if (userProperty != null) 
+                {
+                    userProperty.SetValue(user, newUserProperty.GetValue(newUser));
+                }
             }
 
             return newUser;

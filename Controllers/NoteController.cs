@@ -39,7 +39,7 @@ namespace TaskerAPI.Controllers
         [Route("id")]
         public IActionResult Delete(int id)
         {
-            if (_noteService.Delete(id) == false)
+            if (!_noteService.Delete(id))
             {
                 return NotFound();
             }
