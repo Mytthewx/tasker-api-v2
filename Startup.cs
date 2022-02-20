@@ -1,3 +1,5 @@
+using System;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -5,8 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Text.Json.Serialization;
 using TaskerAPI.Models;
 using TaskerAPI.Services;
 using TaskerAPI.Services.Interfaces;
@@ -26,13 +26,14 @@ public class Startup
     {
         services.AddControllers()
             .AddNewtonsoftJson()
-            .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            .AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.AddDbContext<TaskerContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("TaskerDb")));
         services.AddSwaggerGen(c =>
-            c.SwaggerDoc("v1", new OpenApiInfo {Title = "TaskerAPI", Version = "v1"}));
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "TaskerAPI", Version = "v1" }));
 
         services.AddScoped<INoteService, NoteService>();
         services.AddScoped<IUserService, UserService>();

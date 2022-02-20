@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using TaskerAPI.Entities;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
@@ -28,7 +28,8 @@ public class ReminderService : IReminderService
 
     public Reminder Get(int id)
     {
-        return db.Reminders.FirstOrDefault(x => x.Id == id) ?? throw new Exception(ReminderNotFoundMessage);
+        return db.Reminders.FirstOrDefault(x => x.Id == id) ??
+               throw new Exception(ReminderNotFoundMessage);
     }
 
     public Reminder Create(ReminderCreate reminder)

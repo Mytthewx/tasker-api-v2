@@ -1,8 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TaskerAPI.Entities;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
@@ -29,9 +29,8 @@ public class NoteService : INoteService
 
     public Note Get(int id)
     {
-        return db.Notes.Include(x => x.Reminders)
-                   .FirstOrDefault(x => x.Id == id)
-               ?? throw new Exception(NoteNotFoundMessage);
+        return db.Notes.Include(x => x.Reminders).FirstOrDefault(x => x.Id == id) ??
+               throw new Exception(NoteNotFoundMessage);
     }
 
     public Note Create(NoteCreate note)

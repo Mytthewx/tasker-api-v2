@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using TaskerAPI.Entities;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
@@ -42,7 +42,7 @@ public class UserService : IUserService
     public bool Delete(int id)
     {
         var user = db.Users.FirstOrDefault(x => x.Id == id);
-        if (user == null) 
+        if (user == null)
         {
             return false;
         }
@@ -55,7 +55,7 @@ public class UserService : IUserService
     public User Update(int id, UserUpdate newUser)
     {
         var user = db.Users.FirstOrDefault(x => x.Id == id);
-        if (user == null) 
+        if (user == null)
         {
             throw new Exception(UserNotFoundMessage);
         }
@@ -74,12 +74,13 @@ public class UserService : IUserService
 
         foreach (var newUserProperty in newUserProperties)
         {
-            if (newUserProperty.GetValue(newUser) == null) 
+            if (newUserProperty.GetValue(newUser) == null)
             {
                 continue;
             }
+
             var userProperty = userProperties.FirstOrDefault(x => x.Name == newUserProperty.Name);
-            if (userProperty != null) 
+            if (userProperty != null)
             {
                 userProperty.SetValue(user, newUserProperty.GetValue(newUser));
             }
