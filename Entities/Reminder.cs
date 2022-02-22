@@ -1,14 +1,9 @@
-﻿using System;
+﻿using TaskerAPI.Models.Create;
 
-namespace TaskerAPI
+namespace TaskerAPI.Entities;
+
+public class Reminder : ReminderCreate
 {
-	public class Reminder
-	{
-		public int Id { get;}
-		public string Label { get; set; }
-		public DateTime Date { get; set; }
-		
-		public int NoteId { get; set; }
-		public Note Note { get; set; }
-	}
+    public int Id { get; set; }
+    public Note Note { get; set; }
 }

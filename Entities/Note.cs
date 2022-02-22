@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using TaskerAPI.Models.Create;
 
-namespace TaskerAPI
+namespace TaskerAPI.Entities;
+
+public class Note : NoteCreate
 {
-	public class Note
-	{
-		public int Id { get; }
-		public string Title { get; set; }
-		public string Content { get; set; }
-		public DateTime CreationDate { get; set; }
-		
-		public int UserId { get; set; }
-		public User User { get; set; }
-		public List<Reminder> Reminders { get; set; }
-	}
+    public int Id { get; set; }
+
+    public User User { get; set; }
+    public List<Reminder> Reminders { get; set; }
 }
