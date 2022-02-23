@@ -30,18 +30,23 @@ public class Startup
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-        services.AddDbContext<TaskerContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("TaskerDb")));
+        
         services.AddSwaggerGen(c =>
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "TaskerAPI", Version = "v1" }));
 
+        services.AddScoped<TaskerDatabaseSeeder>();
         services.AddScoped<INoteService, NoteService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IReminderService, ReminderService>();
+
+        services.AddDbContext<TaskerContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("TaskerContext")));
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TaskerDatabaseSeeder seeder)
     {
+        seeder.Seed();
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();

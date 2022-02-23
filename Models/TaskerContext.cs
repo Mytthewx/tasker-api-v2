@@ -5,7 +5,7 @@ namespace TaskerAPI.Models;
 
 public class TaskerContext : DbContext
 {
-    public TaskerContext(DbContextOptions options) : base(options)
+    public TaskerContext(DbContextOptions<TaskerContext> options) : base(options)
     {
     }
 
