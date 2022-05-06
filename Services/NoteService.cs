@@ -1,8 +1,9 @@
-﻿using System;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 using TaskerAPI.Entities;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
@@ -16,24 +17,34 @@ public class NoteService : INoteService
     private readonly IMapper _mapper;
     private readonly TaskerContext db;
 
+
+
     public NoteService(TaskerContext taskerContext, IMapper mapper)
     {
         db = taskerContext;
         _mapper = mapper;
     }
 
-    public IEnumerable<Note> GetAll()
+    public IEnumerable<NoteViewModel> GetAll()
     {
-        return db.Notes.Include(x => x.Reminders).ToList();
+        var notes = db.Notes.Include(n => n.Reminders).ToList();
+        var result = _mapper.Map<IEnumerable<NoteViewModel>>(notes);
+        return result;
     }
 
-    public Note Get(int id)
+    public NoteViewModel Get(int id)
     {
-        return db.Notes.Include(x => x.Reminders).FirstOrDefault(x => x.Id == id) ??
-               throw new Exception(NoteNotFoundMessage);
+        var note = db.Notes.FirstOrDefault(x => x.Id == id);
+        if (note == null)
+        {
+            throw new Exception(NoteNotFoundMessage);
+        }
+        var result = _mapper.Map<NoteViewModel>(note);
+        return result;
+
     }
 
-    public Note Create(NoteCreate note)
+    public async Task<Note> Create(NoteViewModel note)
     {
         var createNote = _mapper.Map<Note>(note);
         db.Notes.Add(createNote);

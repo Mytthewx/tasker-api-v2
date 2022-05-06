@@ -8,13 +8,10 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<Note, NoteCreate>().ReverseMap();
+        CreateMap<Note, NoteViewModel>().ReverseMap();
         CreateMap<Note, NoteUpdate>().ReverseMap();
 
-        CreateMap<User, UserCreate>().ReverseMap();
-        CreateMap<User, UserUpdate>().ReverseMap();
-
         CreateMap<Reminder, ReminderUpdate>().ReverseMap();
-        CreateMap<Reminder, ReminderCreate>().ReverseMap();
+        CreateMap<Reminder, ReminderViewModel>().ReverseMap();
     }
 }

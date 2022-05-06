@@ -1,7 +1,7 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
 using TaskerAPI.Entities;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
@@ -15,24 +15,34 @@ public class ReminderService : IReminderService
     private readonly IMapper _mapper;
     private readonly TaskerContext db;
 
+
     public ReminderService(TaskerContext taskerContext, IMapper mapper)
     {
         db = taskerContext;
         _mapper = mapper;
     }
 
-    public IEnumerable<Reminder> GetAll()
+    public IEnumerable<ReminderViewModel> GetAll()
     {
-        return db.Reminders.ToList();
+        var reminders = db.Reminders.ToList();
+        var result = _mapper.Map<IEnumerable<ReminderViewModel>>(reminders);
+        return result;
     }
 
-    public Reminder Get(int id)
+    public ReminderViewModel Get(int id)
     {
-        return db.Reminders.FirstOrDefault(x => x.Id == id) ??
-               throw new Exception(ReminderNotFoundMessage);
+        var reminder = db.Reminders.FirstOrDefault(x => x.Id == id);
+        if (reminder == null)
+        {
+            throw new Exception(ReminderNotFoundMessage);
+        }
+
+        var result = _mapper.Map<ReminderViewModel>(reminder);
+        return result;
+
     }
 
-    public Reminder Create(ReminderCreate reminder)
+    public Reminder Create(ReminderViewModel reminder)
     {
         var createReminder = _mapper.Map<Reminder>(reminder);
         db.Reminders.Add(createReminder);

@@ -7,9 +7,9 @@ namespace TaskerAPI.Services.Interfaces;
 
 public interface IReminderService
 {
-    IEnumerable<Reminder> GetAll();
-    Reminder Get(int id);
-    Reminder Create(ReminderCreate reminder);
+    IEnumerable<ReminderViewModel> GetAll();
+    ReminderViewModel Get(int id);
+    Reminder Create(ReminderViewModel reminder);
     bool Delete(int id);
     Reminder Update(int id, ReminderUpdate reminderUpdate);
 }

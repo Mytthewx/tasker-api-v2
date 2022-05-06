@@ -2,9 +2,8 @@
 
 namespace TaskerAPI.Models.Create;
 
-public class ReminderCreate
+public class ReminderViewModel
 {
     public string Label { get; set; }
     public DateTime Date { get; set; }
-    public int NoteId { get; set; }
 }
