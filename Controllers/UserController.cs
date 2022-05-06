@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
 using TaskerAPI.Services.Interfaces;
 
 namespace TaskerAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class UserController : ControllerBase
@@ -16,10 +19,38 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet]
-    public IActionResult GetAll()
+    [AllowAnonymous]
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] UserCreate model)
     {
-        return Ok(_userService.GetAll());
+        var result = await _userService.Register(model);
+
+        if (!result)
+        {
+            return BadRequest(new { message = "Username already exist" });
+        }
+
+        return Ok();
+    }
+
+    [AllowAnonymous]
+    [HttpPost("authenticate")]
+    public async Task<IActionResult> Authenticate([FromBody] LoginModel model)
+    {
+        var user = await _userService.Authenticate(model.Username, model.Password);
+
+        if (user == null)
+        {
+            return BadRequest(new { message = "Username or password is incorrect" });
+        }
+
+        return Ok();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        return Ok(await _userService.GetAll());
     }
 
     [HttpGet]

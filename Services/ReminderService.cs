@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TaskerAPI.Entities;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
@@ -42,12 +43,13 @@ public class ReminderService : IReminderService
 
     }
 
-    public Reminder Create(ReminderViewModel reminder)
+    public async Task<int> Create(ReminderViewModel reminder, int noteId)
     {
         var createReminder = _mapper.Map<Reminder>(reminder);
-        db.Reminders.Add(createReminder);
-        db.SaveChanges();
-        return createReminder;
+        createReminder.NoteId = noteId;
+        await db.Reminders.AddAsync(createReminder);
+        await db.SaveChangesAsync();
+        return createReminder.Id;
     }
 
     public bool Delete(int id)

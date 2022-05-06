@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TaskerAPI.Entities;
 using TaskerAPI.Models.Create;
+using TaskerAPI.Models.ViewModel;
 
 namespace TaskerAPI.Models;
 
@@ -13,5 +14,7 @@ public class AutoMapperProfile : Profile
 
         CreateMap<Reminder, ReminderUpdate>().ReverseMap();
         CreateMap<Reminder, ReminderViewModel>().ReverseMap();
+
+        CreateMap<User, UserViewModel>().ReverseMap();
     }
 }

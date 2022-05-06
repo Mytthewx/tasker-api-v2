@@ -8,5 +8,6 @@ public class NoteViewModel
     public string Title { get; set; }
     public string Content { get; set; }
     public DateTime CreationDate { get; set; }
+
     public IEnumerable<ReminderViewModel> Reminders { get; set; }
 }

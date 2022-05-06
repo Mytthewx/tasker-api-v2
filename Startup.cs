@@ -7,9 +7,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication;
+using TaskerAPI.Auth;
 using TaskerAPI.Models;
 using TaskerAPI.Services;
 using TaskerAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace TaskerAPI;
 
@@ -29,6 +32,9 @@ public class Startup
             .AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
+        services.AddAuthentication("BasicAuthentication")
+            .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.AddDbContext<TaskerContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("TaskerDb")));
@@ -41,11 +47,13 @@ public class Startup
         services.AddScoped<TaskerDatabaseSeeder>();
         services.AddScoped<INoteService, NoteService>();
         services.AddScoped<IReminderService, ReminderService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TaskerDatabaseSeeder seeder)
     {
-        seeder.Seed();
+        // seeder.Seed();
 
         if (env.IsDevelopment())
         {
@@ -57,6 +65,7 @@ public class Startup
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseAuthentication();
+        app.UseAuthorization();
         app.UseEndpoints(endpoints => endpoints.MapControllers());
     }
 }
