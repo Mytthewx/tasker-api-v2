@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
 using TaskerAPI.Services.Interfaces;
@@ -23,14 +24,14 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet]
-    [Route("id")]
+    [Route("{id}")]
     public IActionResult Get(int id)
     {
         return Ok(_noteService.Get(id));
     }
 
     [HttpPost]
-    public IActionResult Create(NoteCreate noteCreate)
+    public IActionResult Create(NoteViewModel noteCreate)
     {
         return Ok(_noteService.Create(noteCreate));
     }

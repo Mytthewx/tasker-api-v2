@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskerAPI.Models;
 
@@ -11,9 +12,10 @@ using TaskerAPI.Models;
 namespace TaskerAPI.Migrations
 {
     [DbContext(typeof(TaskerContext))]
-    partial class TaskerContextModelSnapshot : ModelSnapshot
+    [Migration("20220506144510_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

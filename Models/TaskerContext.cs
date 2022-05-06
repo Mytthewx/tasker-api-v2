@@ -13,16 +13,20 @@ public class TaskerContext : DbContext
     public DbSet<Reminder> Reminders { get; set; }
     public DbSet<User> Users { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        modelBuilder.Entity<Note>()
-            .HasOne(n => n.User)
-            .WithMany(n => n.Notes)
-            .HasForeignKey(n => n.UserId);
+        base.OnModelCreating(builder);
 
-        modelBuilder.Entity<Reminder>()
-            .HasOne(r => r.Note)
-            .WithMany(r => r.Reminders)
-            .HasForeignKey(r => r.NoteId);
+        //builder.Entity<ApplicationUser>(user =>
+        //{
+        //    user.HasMany(u => u.Notes)
+        //        .WithOne(n => n.ApplicationUser)
+        //        .HasForeignKey(n => n.ApplicationUserId);
+        //});
+
+        builder.Entity<Note>(note =>
+        {
+            note.HasMany(n => n.Reminders).WithOne(r => r.Note).HasForeignKey(r => r.NoteId);
+        });
     }
 }

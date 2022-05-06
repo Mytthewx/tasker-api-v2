@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
 using TaskerAPI.Services.Interfaces;
 
 namespace TaskerAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class ReminderController : ControllerBase
@@ -23,14 +25,14 @@ public class ReminderController : ControllerBase
     }
 
     [HttpGet]
-    [Route("id")]
+    [Route("{id}")]
     public IActionResult Get(int id)
     {
         return Ok(_reminderService.Get(id));
     }
 
     [HttpPost]
-    public IActionResult Create(ReminderCreate reminderCreate)
+    public IActionResult Create(ReminderViewModel reminderCreate)
     {
         return Ok(_reminderService.Create(reminderCreate));
     }
