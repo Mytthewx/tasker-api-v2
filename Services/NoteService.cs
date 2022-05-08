@@ -1,40 +1,43 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TaskerAPI.Entities;
 using TaskerAPI.Models;
-using TaskerAPI.Models.Create;
+using TaskerAPI.Models.Update;
+using TaskerAPI.Models.ViewModel;
 using TaskerAPI.Services.Interfaces;
 
 namespace TaskerAPI.Services;
 
 public class NoteService : INoteService
 {
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private const string NoteNotFoundMessage = "Note with this id doesn't exist.";
     private readonly IMapper _mapper;
-    private readonly TaskerContext db;
+    private readonly TaskerContext _db;
 
 
-
-    public NoteService(TaskerContext taskerContext, IMapper mapper)
+    public NoteService(TaskerContext taskerContext, IMapper mapper, IHttpContextAccessor httpContextAccessor)
     {
-        db = taskerContext;
+        _db = taskerContext;
         _mapper = mapper;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public IEnumerable<NoteViewModel> GetAll()
     {
-        var notes = db.Notes.Include(n => n.Reminders).ToList();
-        var result = _mapper.Map<IEnumerable<NoteViewModel>>(notes);
-        return result;
+        var notes = _db.Notes.Include(n => n.Reminders).ToList();
+        return _mapper.Map<IEnumerable<NoteViewModel>>(notes);
     }
 
     public NoteViewModel Get(int id)
     {
-        var note = db.Notes.FirstOrDefault(x => x.Id == id);
+        var note = _db.Notes.FirstOrDefault(x => x.Id == id);
         if (note == null)
         {
             throw new Exception(NoteNotFoundMessage);
@@ -44,30 +47,32 @@ public class NoteService : INoteService
 
     }
 
-    public async Task<Note> Create(NoteViewModel note)
+    public async Task<int> Create(NoteViewModel note)
     {
         var createNote = _mapper.Map<Note>(note);
-        db.Notes.Add(createNote);
-        db.SaveChanges();
-        return createNote;
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        createNote.UserId = int.Parse(userId);
+        await _db.Notes.AddAsync(createNote);
+        await _db.SaveChangesAsync();
+        return createNote.Id;
     }
 
     public bool Delete(int id)
     {
-        var note = db.Notes.FirstOrDefault(x => x.Id == id);
+        var note = _db.Notes.FirstOrDefault(x => x.Id == id);
         if (note == null)
         {
             return false;
         }
 
-        db.Notes.Remove(note);
-        db.SaveChanges();
+        _db.Notes.Remove(note);
+        _db.SaveChanges();
         return true;
     }
 
     public Note Update(int id, NoteUpdate newNote)
     {
-        var note = db.Notes.FirstOrDefault(x => x.Id == id);
+        var note = _db.Notes.FirstOrDefault(x => x.Id == id);
         if (note == null)
         {
             throw new Exception(NoteNotFoundMessage);
@@ -77,7 +82,7 @@ public class NoteService : INoteService
         note.Content = newNote.Content;
         note.CreationDate = newNote.CreationDate;
 
-        db.SaveChanges();
+        _db.SaveChanges();
         return note;
     }
 }

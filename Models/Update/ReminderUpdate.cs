@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TaskerAPI.Models;
+namespace TaskerAPI.Models.Update;
 
 public class ReminderUpdate
 {

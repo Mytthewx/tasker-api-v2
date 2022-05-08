@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TaskerAPI.Models.Create;
+namespace TaskerAPI.Models.ViewModel;
 
 public class ReminderViewModel
 {

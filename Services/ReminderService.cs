@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TaskerAPI.Entities;
 using TaskerAPI.Models;
-using TaskerAPI.Models.Create;
+using TaskerAPI.Models.Update;
+using TaskerAPI.Models.ViewModel;
 using TaskerAPI.Services.Interfaces;
 
 namespace TaskerAPI.Services;
@@ -25,8 +27,7 @@ public class ReminderService : IReminderService
     public IEnumerable<ReminderViewModel> GetAll()
     {
         var reminders = db.Reminders.ToList();
-        var result = _mapper.Map<IEnumerable<ReminderViewModel>>(reminders);
-        return result;
+        return _mapper.Map<IEnumerable<ReminderViewModel>>(reminders);
     }
 
     public ReminderViewModel Get(int id)
@@ -42,12 +43,13 @@ public class ReminderService : IReminderService
 
     }
 
-    public Reminder Create(ReminderViewModel reminder)
+    public async Task<int> Create(ReminderViewModel reminder, int noteId)
     {
         var createReminder = _mapper.Map<Reminder>(reminder);
-        db.Reminders.Add(createReminder);
-        db.SaveChanges();
-        return createReminder;
+        createReminder.NoteId = noteId;
+        await db.Reminders.AddAsync(createReminder);
+        await db.SaveChangesAsync();
+        return createReminder.Id;
     }
 
     public bool Delete(int id)

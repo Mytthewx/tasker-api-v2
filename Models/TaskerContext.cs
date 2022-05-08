@@ -1,12 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using TaskerAPI.Entities;
 
 namespace TaskerAPI.Models;
 
 public class TaskerContext : DbContext
 {
-    public TaskerContext(DbContextOptions<TaskerContext> options) : base(options)
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    public TaskerContext(DbContextOptions<TaskerContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
     {
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public DbSet<Note> Notes { get; set; }
@@ -17,12 +20,12 @@ public class TaskerContext : DbContext
     {
         base.OnModelCreating(builder);
 
-        //builder.Entity<ApplicationUser>(user =>
-        //{
-        //    user.HasMany(u => u.Notes)
-        //        .WithOne(n => n.ApplicationUser)
-        //        .HasForeignKey(n => n.ApplicationUserId);
-        //});
+        builder.Entity<User>(user =>
+        {
+            user.HasMany(u => u.Notes)
+                .WithOne(n => n.User)
+                .HasForeignKey(n => n.UserId);
+        });
 
         builder.Entity<Note>(note =>
         {

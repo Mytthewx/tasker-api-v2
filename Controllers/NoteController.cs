@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TaskerAPI.Models;
-using TaskerAPI.Models.Create;
+using System.Threading.Tasks;
+using TaskerAPI.Models.Update;
+using TaskerAPI.Models.ViewModel;
 using TaskerAPI.Services.Interfaces;
 
 namespace TaskerAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class NoteController : ControllerBase
@@ -31,20 +33,20 @@ public class NoteController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create(NoteViewModel noteCreate)
+    public async Task<IActionResult> Create(NoteViewModel noteCreate)
     {
-        return Ok(_noteService.Create(noteCreate));
+        return Ok(await _noteService.Create(noteCreate));
     }
 
     [HttpDelete]
-    [Route("id")]
+    [Route("{id}")]
     public IActionResult Delete(int id)
     {
         return _noteService.Delete(id) ? Ok() : NotFound();
     }
 
     [HttpPut]
-    [Route("id")]
+    [Route("{id}")]
     public IActionResult Update(int id, NoteUpdate noteUpdate)
     {
         return Ok(_noteService.Update(id, noteUpdate));

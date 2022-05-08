@@ -12,7 +12,7 @@ using TaskerAPI.Models;
 namespace TaskerAPI.Migrations
 {
     [DbContext(typeof(TaskerContext))]
-    [Migration("20220506144510_init")]
+    [Migration("20220506205607_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

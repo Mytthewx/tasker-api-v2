@@ -1,11 +1,16 @@
-﻿using System;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
+using System.Threading.Tasks;
 using TaskerAPI.Entities;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
+using TaskerAPI.Models.Update;
+using TaskerAPI.Models.ViewModel;
 using TaskerAPI.Services.Interfaces;
+using BC = BCrypt.Net.BCrypt;
 
 namespace TaskerAPI.Services;
 
@@ -21,9 +26,52 @@ public class UserService : IUserService
         _mapper = mapper;
     }
 
-    public IEnumerable<User> GetAll()
+
+    public async Task<bool> Register(UserCreate model)
     {
-        return db.Users.ToList();
+        var user = await db.Users.FirstOrDefaultAsync(x => x.Username == model.Username);
+        if (user != null)
+        {
+            return false;
+        }
+
+        var newUser = new User
+        {
+            EmailAddress = model.Email,
+            Username = model.Username,
+            Password = BC.HashPassword(model.Password)
+        };
+
+        await db.Users.AddAsync(newUser);
+        await db.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<User> Authenticate(string username, string password)
+    {
+        User user;
+        try
+        {
+            user = await db.Users.FirstOrDefaultAsync(x => x.Username == username);
+        }
+        catch
+        {
+            throw new Exception("Problem with connection to database. Try later.");
+        }
+        if (user == null || !BC.Verify(password, user.Password))
+        {
+            return null;
+        }
+
+        return user;
+    }
+
+    public async Task<IEnumerable<UserViewModel>> GetAll()
+    {
+        var users = await db.Users.Include(x => x.Notes)
+            .ThenInclude(x => x.Reminders)
+            .ToListAsync();
+        return _mapper.Map<IEnumerable<UserViewModel>>(users);
     }
 
     public User Get(int id)

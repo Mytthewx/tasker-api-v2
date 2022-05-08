@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TaskerAPI.Entities;
-using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
+using TaskerAPI.Models.Update;
+using TaskerAPI.Models.ViewModel;
 
 namespace TaskerAPI.Services.Interfaces;
 
 public interface IUserService
 {
-    IEnumerable<User> GetAll();
+    Task<bool> Register(UserCreate model);
+    Task<User> Authenticate(string username, string password);
+    Task<IEnumerable<UserViewModel>> GetAll();
     User Get(int id);
     User Create(UserCreate note);
     bool Delete(int id);

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TaskerAPI.Models;
-using TaskerAPI.Models.Create;
+using System.Threading.Tasks;
+using TaskerAPI.Models.Update;
+using TaskerAPI.Models.ViewModel;
 using TaskerAPI.Services.Interfaces;
 
 namespace TaskerAPI.Controllers;
@@ -32,9 +33,9 @@ public class ReminderController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create(ReminderViewModel reminderCreate)
+    public async Task<IActionResult> Create(ReminderViewModel reminderCreate, int noteId)
     {
-        return Ok(_reminderService.Create(reminderCreate));
+        return Ok(await _reminderService.Create(reminderCreate, noteId));
     }
 
     [HttpDelete]
