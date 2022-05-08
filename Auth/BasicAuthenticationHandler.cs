@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -42,15 +43,42 @@ namespace TaskerAPI.Auth
                 return AuthenticateResult.Fail("Missing Authorization Header");
             }
 
-            User user = null;
+            return await Authenticate();
+        }
+
+        private string[] GetCredentials(AuthenticationHeaderValue authHeader)
+        {
+            var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
+            return Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
+        }
+
+        private AuthenticationTicket GetAuthenticationTicket(User user)
+        {
+            var claims = new[] {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+            };
+
+            var identity = new ClaimsIdentity(claims, Scheme.Name);
+            var principal = new ClaimsPrincipal(identity);
+            return new AuthenticationTicket(principal, Scheme.Name);
+        }
+
+        private async Task<User> GetCredentialsAndTryToAuthenticate()
+        {
+            var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
+            var credentials = GetCredentials(authHeader);
+            var username = credentials[0];
+            var password = credentials[1];
+            return await _userService.Authenticate(username, password);
+        }
+
+        private async Task<AuthenticateResult> Authenticate()
+        {
+            User user;
             try
             {
-                var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
-                var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
-                var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
-                var username = credentials[0];
-                var password = credentials[1];
-                user = await _userService.Authenticate(username, password);
+                user = await GetCredentialsAndTryToAuthenticate();
             }
             catch
             {
@@ -62,13 +90,7 @@ namespace TaskerAPI.Auth
                 return AuthenticateResult.Fail("Invalid Username or Password");
             }
 
-            var claims = new[] {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
-            };
-            var identity = new ClaimsIdentity(claims, Scheme.Name);
-            var principal = new ClaimsPrincipal(identity);
-            var ticket = new AuthenticationTicket(principal, Scheme.Name);
+            var ticket = GetAuthenticationTicket(user);
 
             return AuthenticateResult.Success(ticket);
         }

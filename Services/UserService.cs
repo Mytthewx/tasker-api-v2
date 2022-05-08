@@ -49,7 +49,7 @@ public class UserService : IUserService
 
     public async Task<User> Authenticate(string username, string password)
     {
-        User user = null;
+        User user;
         try
         {
             user = await db.Users.FirstOrDefaultAsync(x => x.Username == username);
@@ -58,7 +58,12 @@ public class UserService : IUserService
         {
             throw new Exception("Problem with connection to database. Try later.");
         }
-        return user == null ? null : BC.Verify(password, user.Password) ? user : null;
+        if (user == null || !BC.Verify(password, user.Password))
+        {
+            return null;
+        }
+
+        return user;
     }
 
     public async Task<IEnumerable<UserViewModel>> GetAll()
