@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TaskerAPI.Models;
-using TaskerAPI.Models.Create;
+using System.Threading.Tasks;
+using TaskerAPI.Models.Update;
+using TaskerAPI.Models.ViewModel;
 using TaskerAPI.Services.Interfaces;
 
 namespace TaskerAPI.Controllers;

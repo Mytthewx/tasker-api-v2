@@ -18,8 +18,7 @@ namespace TaskerAPI.Auth
     {
         private readonly IUserService _userService;
 
-        public BasicAuthenticationHandler(
-            IOptionsMonitor<AuthenticationSchemeOptions> options,
+        public BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock,

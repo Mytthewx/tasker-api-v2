@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using TaskerAPI.Entities;
-using TaskerAPI.Models.Create;
+using TaskerAPI.Models.Update;
 using TaskerAPI.Models.ViewModel;
 
 namespace TaskerAPI.Models;

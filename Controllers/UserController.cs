@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
+using TaskerAPI.Models.Update;
 using TaskerAPI.Services.Interfaces;
 
 namespace TaskerAPI.Controllers;
@@ -25,12 +26,7 @@ public class UserController : ControllerBase
     {
         var result = await _userService.Register(model);
 
-        if (!result)
-        {
-            return BadRequest(new { message = "Username already exist" });
-        }
-
-        return Ok();
+        return result ? Ok() : BadRequest(new { message = "Username already exist" });
     }
 
     [AllowAnonymous]
@@ -41,7 +37,7 @@ public class UserController : ControllerBase
 
         if (user == null)
         {
-            return BadRequest(new { message = "Username or password is incorrect" });
+            return Unauthorized(new { message = "Username or password is incorrect" });
         }
 
         return Ok();
@@ -67,14 +63,14 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("id")]
+    [Route("{id}")]
     public IActionResult Delete(int id)
     {
         return _userService.Delete(id) ? Ok() : NotFound();
     }
 
     [HttpPut]
-    [Route("id")]
+    [Route("{id}")]
     public IActionResult Update(int id, UserUpdate userUpdate)
     {
         return Ok(_userService.Update(id, userUpdate));

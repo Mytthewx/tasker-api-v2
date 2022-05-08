@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,12 +9,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Authentication;
 using TaskerAPI.Auth;
 using TaskerAPI.Models;
 using TaskerAPI.Services;
 using TaskerAPI.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 
 namespace TaskerAPI;
 
@@ -53,7 +53,7 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TaskerDatabaseSeeder seeder)
     {
-        // seeder.Seed();
+        seeder.Seed();
 
         if (env.IsDevelopment())
         {

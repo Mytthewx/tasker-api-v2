@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TaskerAPI.Entities;
 using TaskerAPI.Models;
 using TaskerAPI.Models.Create;
+using TaskerAPI.Models.Update;
 using TaskerAPI.Models.ViewModel;
 using TaskerAPI.Services.Interfaces;
 using BC = BCrypt.Net.BCrypt;
@@ -48,14 +49,16 @@ public class UserService : IUserService
 
     public async Task<User> Authenticate(string username, string password)
     {
-        var user = await db.Users.FirstOrDefaultAsync(x => x.Username == username);
-
-        if (user == null)
+        User user = null;
+        try
         {
-            return null;
+            user = await db.Users.FirstOrDefaultAsync(x => x.Username == username);
         }
-        
-        return BC.Verify(password, user.Password) ? user : null;
+        catch
+        {
+            throw new Exception("Problem with connection to database. Try later.");
+        }
+        return user == null ? null : BC.Verify(password, user.Password) ? user : null;
     }
 
     public async Task<IEnumerable<UserViewModel>> GetAll()
@@ -63,8 +66,7 @@ public class UserService : IUserService
         var users = await db.Users.Include(x => x.Notes)
             .ThenInclude(x => x.Reminders)
             .ToListAsync();
-        var result = _mapper.Map<IEnumerable<UserViewModel>>(users);
-        return result;
+        return _mapper.Map<IEnumerable<UserViewModel>>(users);
     }
 
     public User Get(int id)

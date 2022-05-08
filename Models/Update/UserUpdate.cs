@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TaskerAPI.Models;
+namespace TaskerAPI.Models.Update;
 
 public class UserUpdate
 {

@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using TaskerAPI.Entities;
 using TaskerAPI.Models;
-using TaskerAPI.Models.Create;
+using TaskerAPI.Models.Update;
+using TaskerAPI.Models.ViewModel;
 using TaskerAPI.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
 
 
 namespace TaskerAPI.Services;
@@ -33,8 +33,7 @@ public class NoteService : INoteService
     public IEnumerable<NoteViewModel> GetAll()
     {
         var notes = _db.Notes.Include(n => n.Reminders).ToList();
-        var result = _mapper.Map<IEnumerable<NoteViewModel>>(notes);
-        return result;
+        return _mapper.Map<IEnumerable<NoteViewModel>>(notes);
     }
 
     public NoteViewModel Get(int id)

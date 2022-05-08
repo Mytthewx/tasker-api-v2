@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TaskerAPI.Models.Create;
+namespace TaskerAPI.Models.ViewModel;
 
 public class NoteViewModel
 {
