@@ -1,15 +1,14 @@
-﻿using System;
-using System.Net.Http.Headers;
-using System.Runtime.InteropServices;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using TaskerAPI.Entities;
 using TaskerAPI.Services.Interfaces;
 
@@ -54,7 +53,8 @@ namespace TaskerAPI.Auth
 
         private AuthenticationTicket GetAuthenticationTicket(User user)
         {
-            var claims = new[] {
+            var claims = new[]
+            {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
             };

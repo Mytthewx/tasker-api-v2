@@ -12,7 +12,6 @@ using TaskerAPI.Models.Update;
 using TaskerAPI.Models.ViewModel;
 using TaskerAPI.Services.Interfaces;
 
-
 namespace TaskerAPI.Services;
 
 public class NoteService : INoteService

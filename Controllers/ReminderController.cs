@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using TaskerAPI.Models;
-using TaskerAPI.Models.Create;
 using TaskerAPI.Models.Update;
 using TaskerAPI.Models.ViewModel;
 using TaskerAPI.Services.Interfaces;

@@ -1,5 +1,4 @@
-﻿using TaskerAPI.Models.Create;
-using TaskerAPI.Models.ViewModel;
+﻿using TaskerAPI.Models.ViewModel;
 
 namespace TaskerAPI.Entities;
 
