@@ -10,77 +10,76 @@ using TaskerAPI.Models;
 using TaskerAPI.Models.ViewModel;
 using TaskerAPI.Services.Interfaces;
 
-namespace TaskerAPI.Services
+namespace TaskerAPI.Services;
+
+public class CostService : ICostService
 {
-    public class CostService : ICostService
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private const string CostNotFoundMessage = "Cost with this id doesn't exist.";
+    private readonly IMapper _mapper;
+    private readonly TaskerContext _db;
+
+    public CostService(IHttpContextAccessor httpContextAccessor, IMapper mapper, TaskerContext db)
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private const string CostNotFoundMessage = "Cost with this id doesn't exist.";
-        private readonly IMapper _mapper;
-        private readonly TaskerContext _db;
+        _httpContextAccessor = httpContextAccessor;
+        _mapper = mapper;
+        _db = db;
+    }
 
-        public CostService(IHttpContextAccessor httpContextAccessor, IMapper mapper, TaskerContext db)
+    public IEnumerable<CostViewModel> GetAll()
+    {
+        var costs = _db.Costs.ToList();
+        return _mapper.Map<IEnumerable<CostViewModel>>(costs);
+    }
+
+    public CostViewModel Get(int id)
+    {
+        var cost = _db.Costs.FirstOrDefault(x => x.Id == id);
+        if (cost == null)
         {
-            _httpContextAccessor = httpContextAccessor;
-            _mapper = mapper;
-            _db = db;
+            throw new Exception(CostNotFoundMessage);
         }
 
-        public IEnumerable<CostViewModel> GetAll()
+        var result = _mapper.Map<CostViewModel>(cost);
+        return result;
+    }
+
+    public async Task<int> Create(CostViewModel cost)
+    {
+        var createdCost = _mapper.Map<Cost>(cost);
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        createdCost.UserId = int.Parse(userId);
+        await _db.Costs.AddAsync(createdCost);
+        await _db.SaveChangesAsync();
+        return createdCost.Id;
+    }
+
+    public bool Delete(int id)
+    {
+        var cost = _db.Costs.FirstOrDefault(x => x.Id == id);
+        if (cost == null)
         {
-            var costs = _db.Costs.ToList();
-            return _mapper.Map<IEnumerable<CostViewModel>>(costs);
+            return false;
         }
 
-        public CostViewModel Get(int id)
-        {
-            var cost = _db.Costs.FirstOrDefault(x => x.Id == id);
-            if (cost == null)
-            {
-                throw new Exception(CostNotFoundMessage);
-            }
+        _db.Costs.Remove(cost);
+        _db.SaveChanges();
+        return true;
+    }
 
-            var result = _mapper.Map<CostViewModel>(cost);
-            return result;
+    public Cost Update(int id, CostViewModel costUpdate)
+    {
+        var cost = _db.Costs.FirstOrDefault(x => x.Id == id);
+        if (cost == null)
+        {
+            throw new Exception(CostNotFoundMessage);
         }
 
-        public async Task<int> Create(CostViewModel cost)
-        {
-            var createdCost = _mapper.Map<Cost>(cost);
-            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            createdCost.UserId = int.Parse(userId);
-            await _db.Costs.AddAsync(createdCost);
-            await _db.SaveChangesAsync();
-            return createdCost.Id;
-        }
+        cost.Label = costUpdate.Label;
+        cost.Price = cost.Price;
+        cost.DateTime = cost.DateTime;
 
-        public bool Delete(int id)
-        {
-            var cost = _db.Costs.FirstOrDefault(x => x.Id == id);
-            if (cost == null)
-            {
-                return false;
-            }
-
-            _db.Costs.Remove(cost);
-            _db.SaveChanges();
-            return true;
-        }
-
-        public Cost Update(int id, CostViewModel costUpdate)
-        {
-            var cost = _db.Costs.FirstOrDefault(x => x.Id == id);
-            if (cost == null)
-            {
-                throw new Exception(CostNotFoundMessage);
-            }
-
-            cost.Label = costUpdate.Label;
-            cost.Price = cost.Price;
-            cost.DateTime = cost.DateTime;
-
-            _db.SaveChanges();
-            return cost;
-        }
+        _db.SaveChanges();
+        return cost;
     }
 }
