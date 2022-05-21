@@ -23,10 +23,7 @@ public class TaskerContext : DbContext
 
         builder.Entity<User>(user =>
         {
-            user.HasMany(u => u.Notes)
-                .WithOne(n => n.User)
-                .HasForeignKey(n => n.UserId);
-
+            user.HasMany(u => u.Notes).WithOne(n => n.User).HasForeignKey(n => n.UserId);
             user.HasMany(u => u.Costs).WithOne(c => c.User).HasForeignKey(c => c.UserId);
         });
 
