@@ -15,6 +15,8 @@ public class AutoMapperProfile : Profile
         CreateMap<Reminder, ReminderUpdate>().ReverseMap();
         CreateMap<Reminder, ReminderViewModel>().ReverseMap();
 
+        CreateMap<Cost, CostViewModel>().ReverseMap();
+
         CreateMap<User, UserViewModel>().ReverseMap();
     }
 }

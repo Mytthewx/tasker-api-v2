@@ -10,5 +10,6 @@ namespace TaskerAPI.Models.ViewModel
         public string EmailAddress { get; set; }
 
         public IEnumerable<NoteViewModel> Notes { get; set; }
+        public IEnumerable<CostViewModel> Costs { get; set; }
     }
 }

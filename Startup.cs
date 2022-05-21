@@ -48,6 +48,7 @@ public class Startup
         services.AddScoped<INoteService, NoteService>();
         services.AddScoped<IReminderService, ReminderService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ICostService, CostService>();
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     }
 
