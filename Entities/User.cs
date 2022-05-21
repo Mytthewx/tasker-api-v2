@@ -12,5 +12,6 @@ namespace TaskerAPI.Entities
         public string Password { get; set; }
 
         public List<Note> Notes { get; set; } = new List<Note>();
+        public List<Cost> Costs { get; set; } = new List<Cost>();
     }
 }

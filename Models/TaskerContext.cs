@@ -15,6 +15,7 @@ public class TaskerContext : DbContext
     public DbSet<Note> Notes { get; set; }
     public DbSet<Reminder> Reminders { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Cost> Costs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -25,6 +26,8 @@ public class TaskerContext : DbContext
             user.HasMany(u => u.Notes)
                 .WithOne(n => n.User)
                 .HasForeignKey(n => n.UserId);
+
+            user.HasMany(u => u.Costs).WithOne(c => c.User).HasForeignKey(c => c.UserId);
         });
 
         builder.Entity<Note>(note =>

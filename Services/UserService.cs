@@ -70,6 +70,7 @@ public class UserService : IUserService
     {
         var users = await db.Users.Include(x => x.Notes)
             .ThenInclude(x => x.Reminders)
+            .Include(x => x.Costs)
             .ToListAsync();
         return _mapper.Map<IEnumerable<UserViewModel>>(users);
     }
